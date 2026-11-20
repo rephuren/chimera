@@ -51,3 +51,19 @@ CREATE TABLE IF NOT EXISTS tls_events (
 );
 CREATE INDEX IF NOT EXISTS tls_sni ON tls_events(sni);
 CREATE INDEX IF NOT EXISTS tls_time ON tls_events(ts);
+
+-- written by host agents; the analyzer joins it with flows and TLS events to attribute traffic to processes
+CREATE TABLE IF NOT EXISTS host_connections (
+    id      INTEGER PRIMARY KEY,
+    ts      INTEGER NOT NULL,
+    host    TEXT NOT NULL,
+    pid     INTEGER NOT NULL,
+    process TEXT NOT NULL,
+    proto   INTEGER NOT NULL,
+    laddr   TEXT NOT NULL,
+    lport   INTEGER NOT NULL,
+    raddr   TEXT NOT NULL,
+    rport   INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS hostconn_remote ON host_connections(raddr, rport);
+CREATE INDEX IF NOT EXISTS hostconn_time ON host_connections(ts);
