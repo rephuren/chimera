@@ -4,3 +4,5 @@
 *.db-journal
 .DS_Store
 core/tests/fixtures/*.pcap
+core/fuzz/build/
+core/build/
