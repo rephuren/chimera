@@ -35,3 +35,10 @@ jobs:
         with:
           go-version-file: go.mod
       - run: sh scripts/e2e.sh
+
+  agent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y sqlite3
+      - run: sh agents/linux/test.sh
