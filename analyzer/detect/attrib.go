@@ -25,6 +25,9 @@ func Attribute(findings []Finding, hosts []store.HostConn) {
 			continue
 		}
 		for _, h := range hosts {
+			if h.PID == 0 && (h.Process == "" || h.Process == "-") {
+				continue // the agent saw the connection but could not tell the process (no root): do not label the finding with a placeholder
+			}
 			if h.LAddr == f.Src && near(h.TS, f.TS) && (h.RAddr == f.Subject || containsAddr(f.Detail, h.RAddr)) {
 				f.Process, f.PID = h.Process, h.PID
 				break
