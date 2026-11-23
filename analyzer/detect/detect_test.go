@@ -156,6 +156,15 @@ func TestAttributionAndUnattributed(t *testing.T) {
 	}
 }
 
+func TestAttributionSkipsConnectionsWithoutProcess(t *testing.T) {
+	hosts := []store.HostConn{{TS: 100, Host: "h1", PID: 0, Process: "-", Proto: 6, LAddr: "10.0.0.5", LPort: 22, RAddr: "203.0.113.9", RPort: 443}}
+	f := []Finding{{Kind: "beacon", Subject: "203.0.113.9", Src: "10.0.0.5", TS: 100}}
+	Attribute(f, hosts)
+	if f[0].Process != "" || f[0].PID != 0 {
+		t.Errorf("a placeholder process must not be attached: %+v", f[0])
+	}
+}
+
 func TestAnalyzeOrdersBySeverity(t *testing.T) {
 	r := Analyze(Input{DNS: []store.DNSEvent{q(1, "10.0.0.5", "x7k2q9vz1m4p8d3w.test")},
 		TLS: []store.TLSEvent{{TS: 2, Src: "10.0.0.5", Dst: "192.0.2.77", DPort: 443, SNI: "never.test"}}})
